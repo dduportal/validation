@@ -1,0 +1,30 @@
+---
+name: 'module1.3_task1'
+on:
+  # On each code push
+  push:
+  schedule:
+    # Once per day at 23:00
+    - cron: '* 23 * * *'
+jobs:
+  sandbox:
+    name: Default
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: module1.3_task1/
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Prepare Tooling
+        run: bash -x ./setup.sh
+      - name: Lint
+        run: make lint
+      - name: Build
+        run: make build
+      - name: Unit Tests
+        run: make unit-tests
+      - name: Integration Tests
+        run: make integration-tests
+      - name: Validation
+        run: make validate

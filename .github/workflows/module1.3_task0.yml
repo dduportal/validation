@@ -1,0 +1,20 @@
+---
+name: 'module1.3_task0'
+on:
+  # On each code push
+  push:
+  schedule:
+    # Once per day at 23:00
+    - cron: '* 23 * * *'
+jobs:
+  sandbox:
+    name: Default
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: module1.3_task0/
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Show Help
+        run: make help

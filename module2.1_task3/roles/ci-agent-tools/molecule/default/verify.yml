@@ -1,0 +1,21 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "Retrieve informations about /usr/bin/make"
+      stat:
+        path: "/usr/bin/make"
+      register: cli
+    - name: "Assert that it exists"
+      assert:
+        that: cli.stat.exists
+    - name: "Assert that it is executable"
+      assert:
+        that: cli.stat.executable
+    - name: "Retrieve java version"
+      shell: "java -version 2>&1"
+      register: version_result
+    - name: "Assert it is the default 1.8"
+      assert:
+        that: "'1.8.' in version_result.stdout"

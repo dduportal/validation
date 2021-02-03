@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - geerlingguy.docker
+- hosts: jenkins
+  become: true
+  roles:
+    - ci-agent-tools
+...

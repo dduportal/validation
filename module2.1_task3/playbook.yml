@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - docker
+- hosts: jenkins
+  become: true
+  roles:
+    - ci-agent-tools
+...

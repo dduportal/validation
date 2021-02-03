@@ -1,0 +1,8 @@
+---
+- name: "Install Prerequisite packages"
+  apt:
+    update_cache: true
+    pkg:
+      - make
+      - "openjdk-{{ java_major_version }}-jdk"
+...

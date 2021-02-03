@@ -1,0 +1,7 @@
+---
+- name: "Install Prerequisite packages"
+  apt:
+    pkg:
+      - make
+      - openjdk-8-jdk
+...

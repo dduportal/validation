@@ -1,0 +1,25 @@
+all:
+  hosts:
+    production-node:
+      ansible_host: 127.0.0.1
+      ansible_port: 2222
+      ansible_connection: ssh
+      ansible_user: vagrant
+    jenkins-node:
+      ansible_host: 127.0.0.1
+      ansible_port: 2200
+      ansible_connection: ssh
+      ansible_user: vagrant
+    jenkins-agent-node:
+      ansible_host: 127.0.0.1
+      ansible_port: 2201
+      ansible_connection: ssh
+      ansible_user: vagrant
+  children:
+    production:
+      hosts:
+        production-node: {}
+    jenkins:
+      hosts:
+        jenkins-node: {}
+        jenkins-agent-node: {}
