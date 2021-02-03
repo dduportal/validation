@@ -1,0 +1,18 @@
+---
+services:
+  awesome-web:
+    image: "${DOCKERHUB_USERNAME}/awesome-web:${GIT_TAG}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    ports:
+      - "80:9999"
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:9999/health", "--spider"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+...

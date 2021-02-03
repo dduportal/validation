@@ -1,0 +1,34 @@
+---
+- name: "Install Prerequisite packages"
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+- name: "Install Docker APT Key"
+  apt_key:
+    id: 7EA0A9C3F273FCD8
+    url: https://download.docker.com/linux/ubuntu/gpg
+- name: "Add Docker APT Repository"
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+- name: "Ensure that package manager cache is up to date"
+  apt:
+    update_cache: true
+- name: "Install Docker Engine"
+  apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+- name: Ensure Docker is enabled at boot.
+  service:
+    name: docker
+    enabled: true
+- name: Ensure Docker is started
+  service:
+    name: docker
+    state: started
+...

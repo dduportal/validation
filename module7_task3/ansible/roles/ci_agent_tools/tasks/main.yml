@@ -1,0 +1,15 @@
+---
+- name: "Ensure that package manager cache is up to date"
+  apt:
+    update_cache: true
+- name: "Ensure that https://github.com/debuerreotype/docker-debian-artifacts/issues/24 is solved"
+  file:
+    path: /usr/share/man/man1
+    state: directory
+    mode: '0755'
+- name: "Install Prerequisite packages"
+  apt:
+    pkg:
+      - make
+      - "openjdk-{{ java_major_version }}-jdk"
+...

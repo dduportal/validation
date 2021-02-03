@@ -1,0 +1,22 @@
+---
+schemaVersion: 2.0.0
+
+metadataTest:
+  exposedPorts: ["9999"]
+  env:
+    - key: "PORT"
+      value: "9999"
+  cmd: ["/awesome/awesome-api"]
+
+fileExistenceTests:
+  - name: 'Dist Dir'
+    path: '/awesome/dist'
+    shouldExist: true
+  - name: 'API Binary'
+    path: '/awesome/awesome-api'
+    shouldExist: true
+    isExecutableBy: 'any'
+  - name: 'Default user homedir'
+    path: '/awesome'
+    shouldExist: true
+...

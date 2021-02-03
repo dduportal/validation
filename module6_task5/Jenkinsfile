@@ -1,0 +1,59 @@
+pipeline {
+  agent any
+  stages{
+    stage('Prepare') {
+      steps {
+        dir('module6_task5') {
+          sh 'sudo bash ./setup.sh'
+        }
+      }
+    }
+    stage('Lint') {
+      steps {
+        dir('module6_task5') {
+          sh 'make lint'
+        }
+      }
+    }
+    stage('Build') {
+      steps {
+        dir('module6_task5') {
+          sh 'make build'
+        }
+      }
+    }
+    stage('Tests') {
+      parallel {
+        stage('Unit Tests') {
+          steps {
+            dir('module6_task5') {
+              sh 'make unit-tests'
+            }
+          }
+        }
+        stage('Integration Tests') {
+          steps {
+            dir('module6_task5') {
+              sh 'make integration-tests'
+            }
+          }
+        }
+        stage('Validation') {
+          steps {
+            dir('module6_task5') {
+              sh 'make validation'
+            }
+          }
+        }
+        stage('Docker Tests') {
+          steps {
+            dir('module6_task5') {
+              sh 'make docker-tests'
+            }
+          }
+        }
+      }
+
+    }
+  }
+}

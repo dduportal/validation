@@ -1,0 +1,23 @@
+---
+volumes:
+  jenkins_data:
+
+services:
+  jenkins:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    volumes:
+      - jenkins_data:/var/jenkins_home:rw
+    environment:
+      - JENKINS_LOCATION=${JENKINS_LOCATION:-http://localhost}
+      - AWESOME_SSH_PRIVATEKEY # Pass-Through
+      - AWESOME_AGENT_HOSTNAME  # Pass-Through
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:8080/login"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s

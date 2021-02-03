@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+#echo 'Hello DevOps' > "\*\\\'\"DevOps\"\'\\\*$\?\*\*\*\*\*:)"
+printf "Hello DevOps\n" ../>> "\*\\'"DevOps"\'\\*$\?\*\*\*\*\*:)"

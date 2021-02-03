@@ -1,0 +1,36 @@
+---
+version: 2
+groups:
+- name: docker_nodes
+  targets: []
+- name: ssh_nodes
+  targets:
+  - uri: localhost:2222
+    config:
+      transport: ssh
+      ssh:
+        user: root
+        password: root
+        port: 2222
+        host-key-check: false
+    facts:
+      provisioner: docker
+      container_name: ubuntu_18_04-2222
+      platform: ubuntu:18.04
+      os-release:
+        NAME: Ubuntu
+        VERSION: 18.04.5 LTS (Bionic Beaver)
+        ID: ubuntu
+        ID_LIKE: debian
+        PRETTY_NAME: Ubuntu 18.04.5 LTS
+        VERSION_ID: '18.04'
+        HOME_URL: https://www.ubuntu.com/
+        SUPPORT_URL: https://help.ubuntu.com/
+        BUG_REPORT_URL: https://bugs.launchpad.net/ubuntu/
+        PRIVACY_POLICY_URL: https://www.ubuntu.com/legal/terms-and-policies/privacy-policy
+        VERSION_CODENAME: bionic
+        UBUNTU_CODENAME: bionic
+    features:
+    - puppet-agent
+- name: winrm_nodes
+  targets: []

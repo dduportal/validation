@@ -1,0 +1,53 @@
+---
+services:
+  awesome-web:
+    image: "${DOCKERHUB_USERNAME}/awesome-web:${GIT_TAG}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    ports:
+      - "80:9999"
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:9999/health", "--spider"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  prometheus:
+    image: prom/prometheus:v2.27.0
+    container_name: prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - cadvisor
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:9090/-/healthy", "--spider"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.37.5
+    container_name: cadvisor
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:8080/containers/", "--spider"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+...

@@ -1,0 +1,11 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "Retrieve java version"
+      shell: "java -version 2>&1"
+      register: version_result
+    - name: "Assert it is the custom JDK 11"
+      assert:
+        that: "'11.' in version_result.stdout"

@@ -1,0 +1,5 @@
+baseURL = "https://awesome.inc/"
+languageCode = "en-us"
+title   = "Awesome Inc."
+theme = "ananke"
+publishDir = "dist/"

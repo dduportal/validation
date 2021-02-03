@@ -1,0 +1,96 @@
+---
+services:
+  reverse-proxy:
+    image: traefik:v2.4
+    command:
+      - --ping=true
+      - --ping.entrypoint=ping
+      - --providers.docker.exposedbydefault=false
+      - --entryPoints.web.address=:80
+      - --entryPoints.ping.address=:8888
+      - --accesslog=true
+    restart: unless-stopped
+    read_only: true
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:8888/ping", "--spider"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  awesome-static:
+    image: "${DOCKERHUB_USERNAME}/awesome-web:${GIT_TAG}"
+    environment:
+      - "PORT=9000"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.static.rule=PathPrefix(`/`)
+      - traefik.http.routers.static.entrypoints=web
+      - traefik.http.services.static.loadbalancer.server.port=9000
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:9000/health", "--spider"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  awesome-api:
+    image: "${DOCKERHUB_USERNAME}/awesome-web:${GIT_TAG}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    restart: always
+    environment:
+      - "PORT=9999"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=PathPrefix(`/hello`)
+      - traefik.http.routers.api.entrypoints=web
+      - traefik.http.services.api.loadbalancer.server.port=9999
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:9999/health", "--spider"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  prometheus:
+    image: prom/prometheus:v2.27.0
+    container_name: prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - cadvisor
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:9090/-/healthy", "--spider"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.37.5
+    container_name: cadvisor
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    healthcheck:
+      test: ["CMD", "wget", "http://127.0.0.1:8080/containers/", "--spider"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 2s
+...

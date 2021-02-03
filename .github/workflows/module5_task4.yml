@@ -1,0 +1,74 @@
+---
+name: 'module5_task4'
+on:
+  # On each code push
+  push:
+    paths:
+      - 'module5_task4/**'
+      - '.github/workflows/module5_task4.yml'
+env:
+  DOCKERHUB_USERNAME: dduportal
+jobs:
+  build:
+    name: Default
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: module5_task4/
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Login on Dockerhub (for pull and push)
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Prepare Tooling
+        run: sudo bash ./setup.sh
+      - name: Lint
+        run: make lint
+      - name: Build
+        run: make build
+      - name: Unit Tests
+        run: make unit-tests
+      - name: Integration Tests
+        run: make integration-tests
+      - name: Validation
+        run: make validate
+      - name: Test Docker Images
+        run: make docker-tests
+      - name: Package Generation (Main Branch)
+        run: make package
+      - uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy Production Infrastructure
+        if: github.ref == 'refs/heads/main'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-2
+          INSTANCE_NAME: module5_task4
+        run: |
+          set -eux
+          bash -x ./ensure-server-created.sh > instance-hostname.txt
+          ssh-keyscan -H "$(cat instance-hostname.txt)" >> ~/.ssh/known_hosts
+          bash -x ./ensure-server-setup.sh "$(cat instance-hostname.txt)"
+          export DOCKER_HOST=ssh://ubuntu@"$(cat instance-hostname.txt)"
+          bash -x ./deploy.sh
+      - name: Package Archiving (Main Branch)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v2
+        with:
+          name: website
+          path: module5_task4/awesome-website.zip
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            module5_task4/awesome-website.zip
+            module5_task4/DEPLOY.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
