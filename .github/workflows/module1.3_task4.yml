@@ -44,6 +44,6 @@ jobs:
         with:
           files: |
             module1.3_task4/awesome-website.zip
-            DEPLOY.md
+            module1.3_task4/DEPLOY.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
