@@ -7,7 +7,8 @@
 
 ## Start / Stop the application
 
-What are the commands to start and stop the application?
+* Use the command `make run` to start the application
+* Use the command `make stop` to stop the application
 
 ## Configuration
 
