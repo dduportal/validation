@@ -7,6 +7,7 @@ on:
     # Once per day at 23:00
     - cron: '* 23 * * *'
   pull_request:
+  release:
 jobs:
   sandbox:
     name: Default

@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: release-drafter/release-drafter@v5
         env:
-          # This token is generated automatically by default in GitHub Actions: no need to create it manually
+          # This token is generated automatically by default in GitHub Actions:
+          # no need to create it manually
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ...
