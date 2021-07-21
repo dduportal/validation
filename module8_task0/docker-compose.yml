@@ -31,7 +31,7 @@ services:
       - POSTGRES_USER=puppetdb
       - POSTGRES_DB=puppetdb
     healthcheck:
-      test: [ 'CMD-SHELL', "psql --username=puppetdb puppetdb -c ''" ]
+      test: ['CMD-SHELL', "psql --username=puppetdb puppetdb -c ''"]
       interval: 10s
       timeout: 5s
       retries: 6
