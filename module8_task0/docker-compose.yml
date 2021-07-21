@@ -1,6 +1,4 @@
 ---
-version: '2.4'
-
 volumes:
   puppetserver-code:
   puppetserver-config:
@@ -11,7 +9,7 @@ volumes:
 services:
   puppet:
     hostname: puppet
-    image: puppet/puppetserver:7.0.3
+    image: puppet/puppetserver:7.2.1
     ports:
       - 8140:8140
     environment:
@@ -26,14 +24,14 @@ services:
       - puppetserver-data:/opt/puppetlabs/server/data/puppetserver/
 
   postgres:
-    image: postgres:9.6
+    image: postgres:13.3
     hostname: postgres
     environment:
       - POSTGRES_PASSWORD=puppetdb
       - POSTGRES_USER=puppetdb
       - POSTGRES_DB=puppetdb
     healthcheck:
-      test: ['CMD-SHELL', "psql --username=puppetdb puppetdb -c ''"]
+      test: [ 'CMD-SHELL', "psql --username=puppetdb puppetdb -c ''" ]
       interval: 10s
       timeout: 5s
       retries: 6
@@ -45,7 +43,7 @@ services:
 
   puppetdb:
     hostname: puppetdb
-    image: puppet/puppetdb:7.1.0
+    image: puppet/puppetdb:7.5.0
     environment:
       - PUPPERWARE_ANALYTICS_ENABLED=false
       - PUPPETSERVER_HOSTNAME=puppet
@@ -63,13 +61,4 @@ services:
         condition: service_healthy
     volumes:
       - puppetdb:/opt/puppetlabs/server/data/puppetdb
-
-  node01:
-    image: puppet/puppet-agent-ubuntu:7.4.1
-    hostname: node01
-    command: >
-      agent --verbose --summarize --no-daemonize --server puppet
-      --certname node01 --masterport 8140 --ca_server puppet --ca_port 8140
-    depends_on:
-      puppet:
-        condition: service_healthy
+...
