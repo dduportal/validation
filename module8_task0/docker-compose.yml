@@ -61,4 +61,14 @@ services:
         condition: service_healthy
     volumes:
       - puppetdb:/opt/puppetlabs/server/data/puppetdb
+
+  node01:
+    image: puppet/puppet-agent-ubuntu:7.9.0
+    hostname: node01
+    command: >
+      agent --verbose --summarize --no-daemonize --server puppet
+      --certname node01 --masterport 8140 --ca_server puppet --ca_port 8140
+    depends_on:
+      puppet:
+        condition: service_healthy
 ...
