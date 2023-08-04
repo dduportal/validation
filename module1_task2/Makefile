@@ -10,4 +10,7 @@ post:
 clean:
 	@rm -rf $(CURDIR)/public
 
-.PHONY: build post clean
+help:
+	echo "Help"
+
+.PHONY: build post clean help
