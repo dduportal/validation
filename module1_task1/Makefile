@@ -1,5 +1,7 @@
 build:
-	@hugo
+	git submodule update --init --recursive
+	ls -latrh
+	hugo
 
 post:
 	@test -n "$(POST_NAME)" || { echo "ERROR: Variable 'POST_NAME' unset."; exit 1; }
