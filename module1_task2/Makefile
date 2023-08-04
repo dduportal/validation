@@ -11,6 +11,6 @@ clean: ## Cleanup generated website
 	@rm -rf $(CURDIR)/public
 
 help: ## Print help
-	echo "Help"
+	echo "build clean post help"
 
 .PHONY: build post clean help
